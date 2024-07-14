@@ -260,7 +260,7 @@ function generateAuthors(){
     const authorsName = article.getAttribute('data-author');
     console.log(authorsName);
 
-    const authorHTML = '<p class="post-author">by '+authorsName+'</p>';
+    const authorHTML = '<a href="#author-'+authorsName+'" class="post-author">by '+authorsName+'</a>';
     console.log(authorHTML);
     html = html + ' ' + authorHTML;
 
@@ -300,7 +300,7 @@ function authorClickHandler(event){
   /* END LOOP: for each found tag link */
   }
   /* execute function "generateTitleLinks" with article selector as argument */
-  generateTitleLinks('[data-author~="' + tag + '"]');
+  generateTitleLinks('[data-author="' + tag + '"]');
 }
 
 function addClickListenersToAuthors(){
