@@ -1,13 +1,37 @@
 import globals from "globals";
-import pluginJs from "@eslint/js";
-import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
-import { fixupConfigRules } from "@eslint/compat";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import js from "@eslint/js";
+import { FlatCompat } from "@eslint/eslintrc";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const compat = new FlatCompat({
+    baseDirectory: __dirname,
+    recommendedConfig: js.configs.recommended,
+    allConfig: js.configs.all
+});
 
-export default [
-  {files: ["**/*.{js,mjs,cjs,jsx}"]},
-  { languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } } },
-  {languageOptions: { globals: globals.browser }},
-  pluginJs.configs.recommended,
-  ...fixupConfigRules(pluginReactConfig),
-];
+export default [...compat.extends("eslint:recommended"), {
+    languageOptions: {
+        globals: {
+            ...globals.browser,
+        },
+
+        ecmaVersion: 2015,
+        sourceType: "script",
+    },
+
+    rules: {
+        indent: ["error", 2],
+        "linebreak-style": ["off"],
+
+        quotes: ["error", "single", {
+            allowTemplateLiterals: true,
+        }],
+
+        semi: ["error", "always"],
+        "no-console": ["off"],
+        "no-prototype-builtins": ["off"],
+    },
+}];
