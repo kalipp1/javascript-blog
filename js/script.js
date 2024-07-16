@@ -65,8 +65,10 @@ const optArticleSelector = '.post',
   optArticleTagsSelector = '.post-tags .list',
   optArticleAuthorSelector = '.post-author',
   optTagsListSelector = '.list.tags',
+  optAuthorsListSelector = '.list.authors',
   optCloudClassCount = 5,
-  optCloudClassPrefix = 'tag-size-';
+  optCloudClassPrefix = 'tag-size-',
+  optCloudAuthorsClassPrefix = 'author-size-';
 
 function generateTitleLinks(customSelector = '') {
   console.log(customSelector);
@@ -179,12 +181,35 @@ function calculateTagsParams(tags) {
   return params;
 }
 
+function calculateAuthorsParams(authors) {
+  const params = { max: 0, min: 999999 };
+  for (let author in authors) {
+    console.log(author + ' is used ' + authors[author] + ' times');
+    if (authors[author] > params.max) {
+      params.max = authors[author];
+    }
+    if (authors[author] < params.min) {
+      params.min = authors[author];
+    }
+  }
+  return params;
+}
+
+
 function calculateTagClass(count, params) {
   const normalizedCount = count - params.min;
   const normalizedMax = params.max - params.min;
   const percentage = normalizedCount / normalizedMax;
   const classNumber = Math.floor(percentage * (optCloudClassCount - 1) + 1);
   return optCloudClassPrefix + classNumber;
+}
+
+function calculateAuthorClass(count, params) {
+  const normalizedCount = count - params.min;
+  const normalizedMax = params.max - params.min;
+  const percentage = normalizedCount / normalizedMax;
+  const classNumber = Math.floor(percentage * (optCloudClassCount - 1) + 1);
+  return optCloudAuthorsClassPrefix + classNumber;
 }
 
 function generateTags() {
@@ -301,6 +326,7 @@ function addClickListenersToTags() {
 addClickListenersToTags();
 
 function generateAuthors() {
+  let allAuthors = {};
   const Articles = document.querySelectorAll('article');
   console.log(Articles);
 
@@ -318,8 +344,31 @@ function generateAuthors() {
     console.log(authorHTML);
     html = html + ' ' + authorHTML;
 
+    if (!allAuthors[authorsName]) {
+      allAuthors[authorsName] = 1;
+    }
+    else {
+      allAuthors[authorsName]++;
+    }
+
     authorsWrapper.insertAdjacentHTML('afterbegin', html);
   }
+  const authorList = document.querySelector(optAuthorsListSelector);
+
+  /* [NEW] create variable for all links HTML code */
+  const authorParams = calculateAuthorsParams(allAuthors);
+  console.log('authorsParams:', authorParams);
+  let allAuthorsHTML = '';
+
+  /* [NEW] START LOOP: for each tag in allTags: */
+  for (let author in allAuthors) {
+    /* [NEW] generate code of a link and add it to allTagsHTML */
+    allAuthorsHTML += '<li><a href="#author-'+author+'" class="' + calculateAuthorClass(allAuthors[author], authorParams) + '">' + author + ' (' + allAuthors+ ') ' + '</a></li>';
+  }
+  /* [NEW] END LOOP: for each tag in allTags: */
+
+  /*[NEW] add HTML from allTagsHTML to tagList */
+  authorList.innerHTML = allAuthorsHTML;
 }
 
 generateAuthors();
