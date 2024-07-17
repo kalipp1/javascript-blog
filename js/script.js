@@ -363,7 +363,7 @@ function generateAuthors() {
   /* [NEW] START LOOP: for each tag in allTags: */
   for (let author in allAuthors) {
     /* [NEW] generate code of a link and add it to allTagsHTML */
-    allAuthorsHTML += '<li><a href="#author-'+author+'" class="' + calculateAuthorClass(allAuthors[author], authorParams) + '">' + author + ' (' + allAuthors+ ') ' + '</a></li>';
+    allAuthorsHTML += '<li><a href="#author-'+author+'" class="' + calculateAuthorClass(allAuthors[author], authorParams) + '">' + author + ' (' + allAuthors[author]+ ') ' + '</a></li>';
   }
   /* [NEW] END LOOP: for each tag in allTags: */
 
